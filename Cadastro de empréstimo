@@ -3,81 +3,72 @@
 #include <string.h>
 
 #define MAX_LIVROS 100
-#define MAX_USUARIOS 100
+#define MAX_LEITORES 100
 #define MAX_EMPRESTIMOS 100
 
 typedef struct {
-   int id;
-   char titulo[100];
-   char autor[100];
-   int disponivel;
-}Livro;
-
-typedef struct{
     int id;
-    char nome[100];
-    char cpf[20];
-}Usuario;
+    char titulo[100];
+    char autor[100];
+    char disponivel;
+}livro;
 
 typedef struct {
     int id;
-    int idlivro;
-    int idusuario;
-    char dataEmprestimo[20];
-    char datadevolucao[20];
-    int ativo;
-{Emprestimo;
+    char nome[100];
+    char email[100];
+    char telefone[20];
+    char cpf[20];
+}leitor;
 
-Livro livro[MAX_LIVROS];
-Usuario usuario[MAX_USUARIOS];
-Emprestimos emprestimos[MAX_EMPRESTIMOS];
+typedef struct {
+    int id;
+    int id_leitor;
+    int id_livro;
+    char data_emprestimo[20];
+    char data_devolucao[20];
+}emprestimo;
 
-int totallivros = 0;
-int totalusuarios = 0;
-int totalemprestimos = 0;
-
-void limparBuffer() {
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF);
-}
-void limparTela() {
-#ifdef _WIN32
-    system("cls");
-#else
-    system("clear");
-#endif
-}
-void pausar() {
-    printf("\nPressione ENTER para continuar...");
-    limparBuffer();
-}
-void cadastrarLivro() {
-
-    if (totalLivros >= MAX_LIVROS) {
-        printf("\nLimite de livros atingido!\n");
+void cadastrarlivro(livro *livros, int *num_livros) {
+    if (*num_livros >= MAX_LIVROS) {
+        printf("limite de livros atingido. \n");
         return;
     }
-Livro l;
+}
 
-    l.id = totalLivros + 1;
-    l.disponivel = 1;
+void cadastrarleitor(leitor *leitores, int *num_leitores) {
+    if (*num_leitores >= MAX_LEITORES) {
+        printf("limite de leitores atingido. \n");
+        return;
+    }
+}
 
-    limparBuffer();
-
-    printf("\n===== CADASTRAR LIVRO =====\n");
-
-    printf("Título: ");
-    fgets(l.titulo, sizeof(l.titulo), stdin);
-    l.titulo[strcspn(l.titulo, "\n")] = '\0';
-livros[totalLivros] = l;
-    totalLivros++;
-
-    printf("\nLivro cadastrado com sucesso!\n");
+void cadastraremprestimo(emprestimo *emprestimos, int *num_emprestimos, leitor *leitores, livro *livros, int num_leitores, int num_livros) {
+    if (*num_emprestimos >= MAX_EMPRESTIMOS) {
+        printf("limite de  emprestimos atingido. \n");
+        return;
+    }
 }
 
 
 
+int main() {
+    livro livros[MAX_LIVROS];
+    leitor leitores[MAX_LEITORES];
+    emprestimo emprestimos[MAX_EMPRESTIMOS];
+    int num_livros = 0;
+    int num_leitores = 0;
+    int num_emprestimos = 0;
+    int opcao;
+    while (1) {
+        printf{"1. Cadastrar Livro \n"};
+        printf{"2. Cadastrar Leitor \n"};
+        printf{"3. Cadastrar Emprestimo \n"};
+        printf{"4. Sair \n"};
+        printf{"Opcao: "};
+        scanf{"%d", &opcao};
 
-
-
-
+        switch (opcao) {}
+        
+   }
+}
