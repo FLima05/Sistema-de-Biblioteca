@@ -7,14 +7,15 @@
 #define MAX_EMPRESTIMOS 100
 
 typedef struct {
-    int id;
+
+    int id_livro;
     char titulo[100];
     char autor[100];
     char disponivel;
 }livro;
 
 typedef struct {
-    int id;
+    int id_leitor;
     char nome[100];
     char email[100];
     char telefone[20];
@@ -22,7 +23,7 @@ typedef struct {
 }leitor;
 
 typedef struct {
-    int id;
+    int id_emprestimo;
     int id_leitor;
     int id_livro;
     char data_emprestimo[20];
@@ -34,25 +35,99 @@ void cadastrarlivro(livro *livros, int *num_livros) {
         printf("limite de livros atingido. \n");
         return;
     }
-}
+livro novo_livro;
+      novo_livro.id_livro = *num_livros + 1;
+      printf("titulo: ");
+      scanf(" %[^\n]", novo_livro.titulo);
+      printf("autor: ");
+        scanf(" %[^\n]", novo_livro.autor);
+        novo_livro.disponivel = 's';
+        livros[*num_livros] = novo_livro;
+        (*num_livros)++;
+        int i;
+        for (i = 0; i < *num_livros; i++) {
+            printf("%s\n", livros[i].titulo);
+            if (livros[i].disponivel == 'S') {
+                printf("livro encontrado: %s \n", livros[i].titulo);
+            }
+        }
+        if (livros[i].disponivel == 'N') {
+            printf("livro nao encontrado. \n");
+        }
+        printf("livro cadastrado com sucesso. \n");
+        if ((*num_livros) > 0) {
+            printf("livro encontrado: %s \n", livros[*num_livros - 1].titulo);
+        }
+        if (*num_livros == 0) {
+            printf("livro nao encontrado. \n");
+        }
+        
+        }
+    
+
 
 void cadastrarleitor(leitor *leitores, int *num_leitores) {
     if (*num_leitores >= MAX_LEITORES) {
         printf("limite de leitores atingido. \n");
         return;
     }
-}
-
+leitor novo_leitor; 
+    novo_leitor.id_leitor = *num_leitores + 1;
+    printf("nome: ");
+    scanf(" %[^\n]", novo_leitor.nome);
+    printf("email: ");
+    scanf(" %[^\n]", novo_leitor.email);
+    printf("telefone: ");
+    scanf(" %[^\n]", novo_leitor.telefone);
+    printf("cpf: ");
+    scanf(" %[^\n]", novo_leitor.cpf);
+    leitores [*num_leitores] = novo_leitor;
+    (*num_leitores)++;
+    if ((*num_leitores) > 0) {
+        printf("leitor encontrado: %s \n", leitores[*num_leitores - 1].nome);
+    }
+    if (*num_leitores == 0) {
+        printf("leitor nao encontrado. \n");
+    }
+    
+    printf("leitor cadastrado com sucesso. \n");
+    }
+    
 void cadastraremprestimo(emprestimo *emprestimos, int *num_emprestimos, leitor *leitores, livro *livros, int num_leitores, int num_livros) {
     if (*num_emprestimos >= MAX_EMPRESTIMOS) {
         printf("limite de  emprestimos atingido. \n");
         return;
     }
-}
+emprestimo novo_emprestimo; 
+    novo_emprestimo.id_emprestimo = *num_emprestimos + 1;
+    printf("id do  leitor: ");
+    scanf("%d", &novo_emprestimo.id_leitor);
+    printf("id do livro: "); 
+    scanf("%d", &novo_emprestimo.id_livro);
+    printf("data de emprestimo (dd/mm/aaaa): ");
+    scanf(" %[^\n]", novo_emprestimo.data_emprestimo);
+     printf("data de devolucao (dd/mm/aaaa): ");
+    scanf(" %[^\n]", novo_emprestimo.data_devolucao);
+    // verificar se o leitor existe
+    int i;
+    for (i = 0; i < num_leitores; i++)
+        if (leitores[i].id_leitor == novo_emprestimo.id_leitor) {
+            break;
+        }
+        if(i == num_leitores) {
+            printf("leitor nao encontrado. \n");
+            return;
+        }
+     emprestimos[*num_emprestimos] = novo_emprestimo;
+        (*num_emprestimos)++;
+        printf("emprestimo cadastrado com sucesso. \n");
+    if(i == num_leitores) { 
+        printf("leitor nao encontrado. \n");
+        return;
+       }
+    }
 
-
-
-int main() {
+int main() { 
     livro livros[MAX_LIVROS];
     leitor leitores[MAX_LEITORES];
     emprestimo emprestimos[MAX_EMPRESTIMOS];
@@ -61,14 +136,31 @@ int main() {
     int num_emprestimos = 0;
     int opcao;
     while (1) {
-        printf{"1. Cadastrar Livro \n"};
-        printf{"2. Cadastrar Leitor \n"};
-        printf{"3. Cadastrar Emprestimo \n"};
-        printf{"4. Sair \n"};
-        printf{"Opcao: "};
-        scanf{"%d", &opcao};
+        printf("1. Cadastrar Livro \n");
+        printf("2. Cadastrar Leitor \n");
+        printf("3. Cadastrar Emprestimo \n");
+        printf("4. Sair \n");
+        printf("Opcao: ");
+        scanf("%d", &opcao);
 
-        switch (opcao) {}
-        
-   }
+        switch (opcao) {
+            case 1: 
+                cadastrarlivro(livros, &num_livros);
+                break;
+                case 2:
+                cadastrarleitor(leitores, &num_leitores);
+                break;
+                case 3:
+                cadastraremprestimo(emprestimos, &num_emprestimos, leitores, livros, num_leitores, num_livros);
+                break;
+            case 4:
+        printf("saindo... \n");
+        exit(0);
+    default:
+
+        printf("opcao invalida. \n");
+        break;
+        }
+    }
+  return 0;
 }
