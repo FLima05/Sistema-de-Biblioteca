@@ -21,6 +21,12 @@ Feito com amor por estudantes de **Análise e Desenvolvimento de Sistemas** da *
 | **Cristóvão Martins** | Back-end |
 | **Jeovane Wellington** | Back-end |
 
-## 🌐 Funcionalidades
+## 🌐 Como iniciar o projeto
+
+Basta digitar no terminal:
+
+``` 
+mingw32-make run
+```
 
 ---
