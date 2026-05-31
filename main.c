@@ -28,7 +28,9 @@ typedef struct {
     char data_emprestimo[20];
     char data_devolucao[20];
 } emprestimo;
-///////////////////////////////////////////////////// CADASTRO DOS LIVROS //////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////// CADASTRO DE LIVROS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
 void cadastrarlivro(livro *livros, int *num_livros) {
     if (*num_livros >= MAX_LIVROS) {
         printf("Limite de livros atingido. \n");
@@ -48,7 +50,9 @@ void cadastrarlivro(livro *livros, int *num_livros) {
     
     printf("Livro cadastrado com sucesso. ID: %d\n", novo_livro.id_livro);
 }
-////////////////////////////////////////////////// CADASTRO DOS LEITORES //////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////// CADASTRO DE LEITORES \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
 void cadastrarleitor(leitor *leitores, int *num_leitores) {
     if (*num_leitores >= MAX_LEITORES) {
         printf("Limite de leitores atingido. \n");
@@ -71,7 +75,9 @@ void cadastrarleitor(leitor *leitores, int *num_leitores) {
     
     printf("Leitor cadastrado com sucesso. ID: %d\n", novo_leitor.id_leitor);
 }
- ////////////////////////////////////////////// CADASTRO DE EMPRESTIMO //////////////////////////////////////////////////////////////////   
+
+//////////////////////////////////////////// CADASTRO DE EMPRESTIMO //////////////////////////////////////
+
 void cadastraremprestimo(emprestimo *emprestimos, int *num_emprestimos, leitor *leitores, livro *livros, int num_leitores, int num_livros) {
     if (*num_emprestimos >= MAX_EMPRESTIMOS) {
         printf("Limite de emprestimos atingido. \n");
@@ -85,12 +91,7 @@ void cadastraremprestimo(emprestimo *emprestimos, int *num_emprestimos, leitor *
     printf("ID do livro: "); 
     scanf("%d", &novo_emprestimo.id_livro);
     
-    printf("Data de emprestimo (dd/mm/aaaa): ");
-    scanf(" %[^\n]", novo_emprestimo.data_emprestimo);
-    printf("Data de devolucao (dd/mm/aaaa): ");
-    scanf(" %[^\n]", novo_emprestimo.data_devolucao);
-    
-    // verificar se o leitor existe
+    // VERIFICA SE O LEITOR EXISTE
     int i;
     for (i = 0; i < num_leitores; i++) {
         if (leitores[i].id_leitor == novo_emprestimo.id_leitor) {
@@ -101,7 +102,32 @@ void cadastraremprestimo(emprestimo *emprestimos, int *num_emprestimos, leitor *
         printf("Leitor nao encontrado. \n");
         return;
     }
+
+    // VERIFICA SE O LIVRO EXISTE E ESTÁ DISPONÍVEL
+    int j, livro_encontrado = 0;
+    for (j = 0; j < num_livros; j++) {
+        if (livros[j].id_livro == novo_emprestimo.id_livro) {
+            livro_encontrado = 1;
+            if (livros[j].disponivel == 'N') {
+                printf("Erro: Este livro ja esta emprestado no momento.\n");
+                return;
+            }
+            break;
+        }
+    }
+    if (!livro_encontrado) {
+        printf("Livro nao encontrado.\n");
+        return;
+    }
     
+    printf("Data de emprestimo (dd/mm/aaaa): ");
+    scanf(" %[^\n]", novo_emprestimo.data_emprestimo);
+    printf("Data de devolucao (dd/mm/aaaa): ");
+    scanf(" %[^\n]", novo_emprestimo.data_devolucao);
+    
+    // Muda o status do livro para Indisponível
+    livros[j].disponivel = 'N';
+
     emprestimos[*num_emprestimos] = novo_emprestimo;
     (*num_emprestimos)++;
     printf("Emprestimo cadastrado com sucesso. \n");
@@ -112,18 +138,21 @@ typedef struct {
     char email[50];
     char senha[50];
 } usuario;
-/////////////////////////////////////////////////////////// MENU INICIAL /////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////// MENU INICIAL \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
 void menu_biblioteca() {
-    printf("\n=================================\n       SISTEMA BIBLIOTECA\n=================================");
-    printf("\n1 - Cadastrar livros\n");
-    printf("2 - Listar livros\n");
-    printf("3 - Cadastrar usuário\n");
-    printf("4 - Menu de Gestão (Empréstimos e Leitores)\n");
+    printf("\n=================================\n        SISTEMA BIBLIOTECA\n=================================");
+    printf("\n1 - Listar livros\n");
+    printf("2 - Cadastrar usuário\n");
+    printf("3 - Menu de Gestão (Empréstimos e Leitores)\n");
     printf("0 - Sair\n");
     printf("Opcao: ");
 }
-///////////////////////////////////////////////////////// CADASTRO DO USUÁRIO ////////////////////////////////////////////////////////////////
-void cadastrar_usuario() {
+
+//////////////////////////////////////////////////// CADASTRAR USUÁRIO \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+ void cadastrar_usuario() {
     usuario u;
     printf("Digite o nome do usuário: ");
     scanf(" %49[^\n]", u.nome);
@@ -133,13 +162,74 @@ void cadastrar_usuario() {
     scanf(" %49[^\n]", u.senha);
     printf("Usuário cadastrado com sucesso.\n");
 }
-//////////////////////////////////////////////// EM DESENVOLVIMENTO(BRUNO) ///////////////////////////////////////////////////////////////
+
+/////////////////////////////////////// EM DESENVOLVIMENTO(Cristovão)\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
 void emprestimo_ativo(){ printf("Listando emprestimos ativos...\n"); }
-void emprestimo_devolucao(){ printf("Realizando devolucao...\n"); }
-void historico_emprestimo(){ printf("Exibindo historico...\n"); }
-//////////////////////////////////////// ZONA DE EMPRESTIMOS //////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////// DEVOLUÇÃO \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+void emprestimo_devolucao(livro *livros, int num_livros) {
+    int id_procurado;
+    printf("Digite o ID do livro que esta sendo devolvido: ");
+    scanf("%d", &id_procurado);
+
+    int i, encontrado = 0;
+    for (i = 0; i < num_livros; i++) {
+        if (livros[i].id_livro == id_procurado) {
+            encontrado = 1;
+            if (livros[i].disponivel == 'N') {
+                livros[i].disponivel = 'S'; // Livro volta a ficar disponível
+                printf("Devolucao do livro '%s' realizada com sucesso!\n", livros[i].titulo);
+            } else {
+                printf("Aviso: Esse livro ja consta como disponivel no sistema.\n");
+            }
+            break;
+        }
+    }
+
+    if (!encontrado) {
+        printf("Erro: Livro com ID %d nao foi encontrado no sistema.\n", id_procurado);
+    }
+}
+////////////////////////////////////////////////////////// HISTÓRICO DE EMPRÉSTIMOS /////////////////////////////////////////////////
+void historico_emprestimo(emprestimo *emprestimos, int num_emprestimos, leitor *leitores, int num_leitores, livro *livros, int num_livros) {
+    if (num_emprestimos == 0) {
+        printf("Nenhum emprestimo registrado no historico ate o momento.\n");
+        return;
+    }
+
+    printf("\n==== HISTORICO DE EMPRESTIMOS ====\n");
+    for (int i = 0; i < num_emprestimos; i++) {
+        char nome_leitor[100] = "Desconhecido";
+        char titulo_livro[100] = "Desconhecido";
+
+        // Busca o nome do leitor
+        for (int j = 0; j < num_leitores; j++) {
+            if (leitores[j].id_leitor == emprestimos[i].id_leitor) {
+                strcpy(nome_leitor, leitores[j].nome);
+                break;
+            }
+        }
+
+        // Busca o título do livro
+        for (int k = 0; k < num_livros; k++) {
+            if (livros[k].id_livro == emprestimos[i].id_livro) {
+                strcpy(titulo_livro, livros[k].titulo);
+                break;
+            }
+        }
+
+        printf("ID Emprestimo: %d | Leitor: %s | Livro: %s\n", emprestimos[i].id_emprestimo, nome_leitor, titulo_livro);
+        printf("Data Emprestimo: %s | Data Devolucao: %s\n", emprestimos[i].data_emprestimo, emprestimos[i].data_devolucao);
+        printf("---------------------------------\n");
+    }
+}
+
+/////////////////////////////////////////////////// ZONA DE EMPRESTIMOS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
 void zona_emprestimos(emprestimo *emprestimos, int *num_emprestimos, leitor *leitores, livro *livros, int num_leitores, int num_livros){
-    int opcao = -1; // Variável declarada para este escopo
+    int opcao = -1; 
     while (opcao != 0) {
         printf("\n--- ZONA DE EMPRESTIMOS ---\n");
         printf("1. Cadastrar Emprestimo \n");
@@ -158,14 +248,16 @@ void zona_emprestimos(emprestimo *emprestimos, int *num_emprestimos, leitor *lei
                 emprestimo_ativo();
                 break;
             case 3:
-                emprestimo_devolucao();
-                break; // Adicionado break faltante
+                // Atualizado para enviar os livros
+                emprestimo_devolucao(livros, num_livros);
+                break; 
             case 4:
-                historico_emprestimo();
+                // Atualizado para enviar as três listas e cruzar os dados
+                historico_emprestimo(emprestimos, *num_emprestimos, leitores, num_leitores, livros, num_livros);
                 break;
             case 0:
                 printf("Voltando ao menu anterior... \n");
-                return; // Substitui o exit(0) para não fechar o programa inteiro
+                return; 
             default:
                 printf("Opcao invalida. \n");
                 break;
@@ -173,7 +265,7 @@ void zona_emprestimos(emprestimo *emprestimos, int *num_emprestimos, leitor *lei
     }
 }
 
-/////////////////////////////////// NÃO COLOCAR NENHUM PROCEDIMENTO À BAIXO DAQUI /////////////////////////////////////////////////////
+/////////////////////////////////// NÃO COLOCAR NENHUM PROCEDIMENTO À BAIXO DAQUI ///////////////////////////////////
 
 void menu_principal(livro *livros, int *num_livros, leitor *leitores, int *num_leitores, emprestimo *emprestimos, int *num_emprestimos){
     int opcao = -1;
@@ -205,9 +297,8 @@ void menu_principal(livro *livros, int *num_livros, leitor *leitores, int *num_l
         }
     }
 }
-/////////////////////////////////////////////////// EXECUÇÃO INICIAL DO CÓDIGO //////////////////////////////////////////////////////////////
+
 void executar() {
-    // Arrays declarados na base do programa para garantir que os dados fiquem salvos
     livro livros[MAX_LIVROS];
     leitor leitores[MAX_LEITORES];
     emprestimo emprestimos[MAX_EMPRESTIMOS];
@@ -223,15 +314,12 @@ void executar() {
 
         switch(opcao) {
             case 1:
-                cadastrarlivro(livros, &num_livros);
-                break;
-            case 2:
                 printf("Listar livros (ainda nao implementado)\n");
                 break;
-            case 3:
+            case 2:
                 cadastrar_usuario();
                 break;
-            case 4:
+            case 3:
                 // Menu Principal -> Cadastro de livros, leitores e zona de empréstimos
                 menu_principal(livros, &num_livros, leitores, &num_leitores, emprestimos, &num_emprestimos);
                 break;
