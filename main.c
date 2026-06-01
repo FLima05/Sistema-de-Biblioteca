@@ -1,4 +1,4 @@
-#include <stdio.h>
+//#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -49,6 +49,50 @@ void cadastrarlivro(livro *livros, int *num_livros) {
     (*num_livros)++;
     
     printf("Livro cadastrado com sucesso. ID: %d\n", novo_livro.id_livro);
+    
+    FILE *Cadastro_livros;
+
+    Cadastro_livros = fopen("Cadastro_livros.txt", "a");
+
+    if(Cadastro_livros != NULL){
+
+    fprintf(
+        Cadastro_livros,
+        "ID: %d | Livro: %s | Autor: %s | Disponivel: %c |\n",
+        novo_livro.id_livro,
+        novo_livro.titulo,
+        novo_livro.autor,
+        novo_livro.disponivel
+    );
+
+    fclose(Cadastro_livros);
+
+}
+    
+}
+
+////////////////////////////////// LISTAR LIVROS ////////////////////////////////////////////////////////
+
+void listar_livros(){
+    
+    FILE *Cadastro_livros;
+    
+    char linha[300];
+    
+    Cadastro_livros = fopen("Cadastro_livros.txt", "r");
+    
+    if(Cadastro_livros == NULL){
+        printf("Nenhum livro cadastrado.\n");
+        return;
+    }
+    
+    printf("\n=== LIVROS CADASTRADOS ===\n\n");
+    
+    while(fgets(linha, sizeof(linha), Cadastro_livros) != NULL){
+        printf("%s", linha);
+    }
+    
+    fclose(Cadastro_livros);
 }
 
 ///////////////////////////////////////////////// CADASTRO DE LEITORES \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -314,7 +358,7 @@ void executar() {
 
         switch(opcao) {
             case 1:
-                printf("Listar livros (ainda nao implementado)\n");
+                listar_livros();
                 break;
             case 2:
                 cadastrar_usuario();
