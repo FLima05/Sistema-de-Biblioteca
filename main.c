@@ -78,7 +78,7 @@ void carregar_livros() {
     printf("Dados de livros carregados: %d encontrado(s).\n", num_livros);
 }
 
-////////////////////////////////// CADATRO DE LIVROS (MAURICIO) /////////////////
+////////////////////////////////// CADASTRO DE LIVROS (MAURICIO) /////////////////
 
 void cadastrarlivro(livro *livros, int *num_livros) {
     if (*num_livros >= MAX_LIVROS) {
