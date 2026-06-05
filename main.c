@@ -9,7 +9,7 @@
 typedef struct {
     
     int id_livro;
-    char data_publucacao[50];
+    char data_publicacao[50];
     char titulo[100];
     char editora[50];
     char disponivel;
@@ -95,7 +95,7 @@ void cadastrarlivro(livro *livros, int *num_livros) {
     printf("Editora: ");
     scanf (" %[^\n]", novo_livro.editora);
     printf("Data de publicacao: ex(10/10/2008): ");
-    scanf ("%[^\n]", novo_livro.data_publucacao);
+    scanf ("%[^\n]", novo_livro.data_publicacao);
 
     novo_livro.disponivel = 'S'; // Ajustado para maiúsculo
     
@@ -117,7 +117,7 @@ void cadastrarlivro(livro *livros, int *num_livros) {
         novo_livro.titulo,
         novo_livro.autor,
         novo_livro.editora,
-        novo_livro.data_publucacao,
+        novo_livro.data_publicacao,
         novo_livro.disponivel
     );
 
