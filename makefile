@@ -14,12 +14,18 @@ DATA_DIR = data
 TARGET = $(BUILD_DIR)/main
 
 # --------- Fontes ---------
-SRCS = $(SRC_DIR)/main.c
+SRCS = $(SRC_DIR)/main.c \
+       $(SRC_DIR)/emprestimo.c \
+       $(SRC_DIR)/leitor.c \
+       $(SRC_DIR)/livro.c \
+       $(SRC_DIR)/menu.c \
+       $(SRC_DIR)/usuario.c
 
 # --------- Converte cada .C em um .O correspondente ---------
 OBJS = $(patsubst $(SRC_DIR)/%.c, $(BUILD_DIR)/%.o, $(SRCS))
 
 # --------- Headers ---------
+HEADERS = $(INCLUDE_DIR)/emprestimo.h $(INCLUDE_DIR)/leitor.h $(INCLUDE_DIR)/livro.h $(INCLUDE_DIR)/menu.h $(INCLUDE_DIR)/usuario.h
 
 ## REGRAS ##
 

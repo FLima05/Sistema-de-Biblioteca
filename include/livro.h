@@ -1,15 +1,22 @@
-// #ifdef LIVRO_H
-// #define LIVRO_H
+#ifndef LIVRO_H
+#define LIVRO_H
 
-// #define MAX_LIVROS 100
+#define MAX_LIVROS 100
 
-// typedef struct {
-//     int id_livro;
-//     char titulo[100];
-//     char autor[100];
-//     char disponivel;
-// } livro;
+typedef struct {
+    int id_livro;
+    char titulo[100];
+    char autor[100];
+    char disponivel;
+} livro;
 
-// extern livro livros[MAX_LIVROS];
+extern livro livros[MAX_LIVROS];
+extern int num_livros;
+extern int proximo_livro_id;
 
-// #endif
+void cadastrarlivro();
+void listar_livros();
+void salvar_livro();
+void carregar_livros();
+
+#endif
