@@ -1,10 +1,11 @@
-//#include <stdio.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #define MAX_LIVROS 100
 #define MAX_LEITORES 100
 #define MAX_EMPRESTIMOS 100
+#define MAX_USUARIOS 100
 
 typedef struct {
     int id_livro;
@@ -41,35 +42,55 @@ emprestimo emprestimos[MAX_EMPRESTIMOS];
 int num_emprestimos = 0;
 int proximo_emprestimo_id = 1;
 
+typedef struct {
+    int id_usuario;
+    char nome[50];
+    char email[50];
+    char senha[50];
+} usuario;
+
+usuario usuarios[MAX_USUARIOS];
+int num_usuarios = 0;
+int proximo_usuario_id = 1;
+
 //////////////////////////////////////////////// CADASTRO DE LIVROS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 // Função para salvar os livros em um arquivo de texto
 void salvar_livro() {
-    FILE *fp = fopen("data/livro.txt", "w");
+    FILE *fp = fopen("data/livros.txt", "w");
     if (!fp) {
         printf("ERRO: Nao foi possivel salvar o arquivo de livros!\n");
         return;
     }
     fprintf(fp, "%d\n", num_livros);
     fprintf(fp, "%d\n", proximo_livro_id);
-    fprintf(fp, "%d %s %s %c\n", 
-            livros[num_livros].id_livro,
-            livros[num_livros].titulo,
-            livros[num_livros].autor,
-            livros[num_livros].disponivel);
+    for(int i = 0; i < num_livros; i++) {
+        fprintf(fp, "%d | %s | %s | %c\n",
+            livros[i].id_livro,
+            livros[i].titulo,
+            livros[i].autor,
+            livros[i].disponivel);
+    }
     fclose(fp);
+    printf("Dados de livros salvos com sucesso.");
 }
 
 // Função para carregar os livros por um arquivo de texto
 void carregar_livros() {
-    FILE *fp = fopen("data/livro.txt", "r");
+    FILE *fp = fopen("data/livros.txt", "r");
     if (!fp) {
         printf("Nenhum arquivo de livros encontrado. Iniciando com banco vazio.\n");
         return;
     }
-    fread(&num_livros, sizeof(int), 1, fp);
-    fread(&proximo_livro_id, sizeof(int), 1, fp);
-    fread(livros, sizeof(livro), num_livros, fp);
+    fscanf(fp, "%d", &num_livros);
+    fscanf(fp, "%d", &proximo_livro_id);
+    for (int i = 0; i < num_livros; i++){
+        fscanf(fp, "%d | %s | %s | %c", 
+            &livros[i].id_livro,
+            livros[i].titulo,
+            livros[i].autor,
+            &livros[i].disponivel);
+    }
     fclose(fp);
     printf("Dados de livros carregados: %d encontrado(s).\n", num_livros);
 }
@@ -120,37 +141,71 @@ void cadastrarlivro() {
 ////////////////////////////////// LISTAR LIVROS ////////////////////////////////////////////////////////
 
 void listar_livros(){
-    
-    FILE *Cadastro_livros;
-    
-    char linha[300];
-    
-    Cadastro_livros = fopen("Cadastro_livros.txt", "r");
-    
-    if(Cadastro_livros == NULL){
-        printf("Nenhum livro cadastrado.\n");
-        return;
+    if (num_livros == 0){
+        printf("Não há livros cadastrados no momento.");
     }
-    
-    printf("\n=== LIVROS CADASTRADOS ===\n\n");
-    
-    while(fgets(linha, sizeof(linha), Cadastro_livros) != NULL){
-        printf("%s", linha);
+
+    printf("\n=== LIVROS CADASTRADOS ===\n");
+    for(int i = 0; i < num_livros; i++){
+        printf("%d | %s | %s | %c\n",
+            livros[i].id_livro,
+            livros[i].titulo,
+            livros[i].autor,
+            livros[i].disponivel);
     }
-    
-    fclose(Cadastro_livros);
 }
 
 ///////////////////////////////////////////////// CADASTRO DE LEITORES \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-void cadastrarleitor(leitor *leitores, int *num_leitores) {
-    if (*num_leitores >= MAX_LEITORES) {
+// Função para salvar os leitores em um arquivo de texto
+void salvar_leitores() {
+    FILE *fp = fopen("data/leitores.txt", "w");
+    if (!fp) {
+        printf("ERRO: Nao foi possivel salvar o arquivo de leitores!\n");
+        return;
+    }
+    fprintf(fp, "%d\n", num_leitores);
+    fprintf(fp, "%d\n", proximo_leitor_id);
+    for(int i = 0; i < num_leitores; i++) {
+        fprintf(fp, "%s | %s | %s | %s\n",
+            leitores[i].nome,
+            leitores[i].email,
+            leitores[i].telefone,
+            leitores[i].cpf);
+    }
+    fclose(fp);
+    printf("Dados de leitores salvos com sucesso.");
+}
+
+// Função para carregar os leitores por um arquivo de texto
+void carregar_leitores() {
+    FILE *fp = fopen("data/leitores.txt", "r");
+    if (!fp) {
+        printf("Nenhum arquivo de leitores encontrado. Iniciando com banco vazio.\n");
+        return;
+    }
+    fscanf(fp, "%d", &num_leitores);
+    fscanf(fp, "%d", &proximo_leitor_id);
+    for (int i = 0; i < num_leitores; i++){
+        fscanf(fp, "%s | %s | %s | %s", 
+            leitores[i].nome,
+            leitores[i].email,
+            leitores[i].telefone,
+            leitores[i].cpf);
+    }
+    fclose(fp);
+    printf("Dados de livros carregados: %d encontrado(s).\n", num_livros);
+}
+
+void cadastrarleitor() {
+    if (num_leitores >= MAX_LEITORES) {
         printf("Limite de leitores atingido. \n");
         return;
     }
     
     leitor novo_leitor; 
-    novo_leitor.id_leitor = *num_leitores + 1;
+    novo_leitor.id_leitor = proximo_leitor_id;
+
     printf("Nome: ");
     scanf(" %[^\n]", novo_leitor.nome);
     printf("Email: ");
@@ -160,49 +215,67 @@ void cadastrarleitor(leitor *leitores, int *num_leitores) {
     printf("CPF: ");
     scanf(" %[^\n]", novo_leitor.cpf);
     
-    leitores[*num_leitores] = novo_leitor;
-    (*num_leitores)++;
+    leitores[num_leitores] = novo_leitor;
+    num_leitores++;
+    proximo_leitor_id++;
+    salvar_leitores();
     
     printf("Leitor cadastrado com sucesso. ID: %d\n", novo_leitor.id_leitor);
 }
 
-// Função para salvar os leitores em um arquivo de texto
-void salvar_leitores() {
-    FILE *fp = fopen("data/leitor.txt", "w");
-    if (!fp) {
-        printf("ERRO: Nao foi possivel salvar o arquivo de leitores!\n");
-        return;
-    }
-    fwrite(&num_leitores, sizeof(int), 1, fp);
-    fwrite(&proximo_leitor_id, sizeof(int), 1, fp);
-    fwrite(leitores, sizeof(leitor), num_leitores, fp);
-    fclose(fp);
-}
-
-// Função para carregar os leitores por um arquivo de texto
-void carregar_leitores() {
-    FILE *fp = fopen("data/leitor.txt", "r");
-    if (!fp) {
-        printf("Nenhum arquivo de leitores encontrado. Iniciando com banco vazio.\n");
-        return;
-    }
-    fread(&num_leitores, sizeof(int), 1, fp);
-    fread(&proximo_leitor_id, sizeof(int), 1, fp);
-    fread(leitores, sizeof(leitor), num_leitores, fp);
-    fclose(fp);
-    printf("Dados de livros carregados: %d encontrado(s).\n", num_livros);
-}
-
 //////////////////////////////////////////// CADASTRO DE EMPRESTIMO //////////////////////////////////////
 
-void cadastraremprestimo(emprestimo *emprestimos, int *num_emprestimos, leitor *leitores, livro *livros, int num_leitores, int num_livros) {
-    if (*num_emprestimos >= MAX_EMPRESTIMOS) {
+// Função para salvar os emprestimos em um arquivo de texto
+void salvar_emprestimos() {
+    FILE *fp = fopen("data/emprestimos.txt", "w");
+    if (!fp) {
+        printf("ERRO: Nao foi possivel salvar o arquivo de emprestimos!\n");
+        return;
+    }
+    fprintf(fp, "%d\n", num_emprestimos);
+    fprintf(fp, "%d\n", proximo_emprestimo_id);
+    for(int i = 0; i < num_emprestimos; i++) {
+        fprintf(fp, "%d | %d | %d | %s | %s\n",
+            emprestimos[i].id_emprestimo,
+            emprestimos[i].id_leitor,
+            emprestimos[i].id_livro,
+            emprestimos[i].data_emprestimo,
+            emprestimos[i].data_devolucao);
+    }
+    fclose(fp);
+    printf("Dados de emprestimos salvos com sucesso.");
+}
+
+// Função para carregar os emprestimos por um arquivo de texto
+void carregar_emprestimos() {
+    FILE *fp = fopen("data/emprestimos.txt", "r");
+    if (!fp) {
+        printf("Nenhum arquivo de emprestimos encontrado. Iniciando com banco vazio.\n");
+        return;
+    }
+    fscanf(fp, "%d", &num_emprestimos);
+    fscanf(fp, "%d", &proximo_emprestimo_id);
+    for (int i = 0; i < num_emprestimos; i++){
+        fscanf(fp, "%d | %d | %d | %s | %s", 
+            &emprestimos[i].id_emprestimo,
+            &emprestimos[i].id_leitor,
+            &emprestimos[i].id_livro,
+            emprestimos[i].data_emprestimo,
+            emprestimos[i].data_devolucao);
+    }
+    fclose(fp);
+    printf("Dados de emprestimos carregados: %d encontrado(s).\n", num_emprestimos);
+}
+
+void cadastraremprestimo() {
+    if (num_emprestimos >= MAX_EMPRESTIMOS) {
         printf("Limite de emprestimos atingido. \n");
         return;
     }
     
     emprestimo novo_emprestimo; 
-    novo_emprestimo.id_emprestimo = *num_emprestimos + 1;
+    novo_emprestimo.id_emprestimo = proximo_emprestimo_id;
+
     printf("ID do leitor: ");
     scanf("%d", &novo_emprestimo.id_leitor);
     printf("ID do livro: "); 
@@ -245,16 +318,13 @@ void cadastraremprestimo(emprestimo *emprestimos, int *num_emprestimos, leitor *
     // Muda o status do livro para Indisponível
     livros[j].disponivel = 'N';
 
-    emprestimos[*num_emprestimos] = novo_emprestimo;
-    (*num_emprestimos)++;
+    emprestimos[num_emprestimos] = novo_emprestimo;
+    num_emprestimos++;
+    proximo_emprestimo_id++;
+    salvar_emprestimos();
+
     printf("Emprestimo cadastrado com sucesso. \n");
 }
-
-typedef struct {
-    char nome[50];
-    char email[50];
-    char senha[50];
-} usuario;
 
 //////////////////////////////////////////////////// MENU INICIAL \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
@@ -359,7 +429,7 @@ void zona_emprestimos(emprestimo *emprestimos, int *num_emprestimos, leitor *lei
 
         switch (opcao) {
             case 1: 
-                cadastraremprestimo(emprestimos, num_emprestimos, leitores, livros, num_leitores, num_livros);
+                cadastraremprestimo();
                 break;
             case 2:
                 emprestimo_ativo();
@@ -404,7 +474,7 @@ void menu_principal(livro *livros, int *num_livros, leitor *leitores, int *num_l
                 cadastrarlivro();
                 break;
             case 2:
-                cadastrarleitor(leitores, num_leitores);
+                cadastrarleitor();
                 break;
             case 3:
                 zona_emprestimos(emprestimos, num_emprestimos, leitores, livros, *num_leitores, *num_livros);
@@ -420,13 +490,10 @@ void menu_principal(livro *livros, int *num_livros, leitor *leitores, int *num_l
 }
 
 void executar() {
-    livro livros[MAX_LIVROS];
-    leitor leitores[MAX_LEITORES];
-    emprestimo emprestimos[MAX_EMPRESTIMOS];
-    int num_livros = 0;
-    int num_leitores = 0;
-    int num_emprestimos = 0;
-    
+    carregar_livros();
+    carregar_leitores();
+    carregar_emprestimos();
+
     int opcao = -1;
 
     while(opcao != 0){
