@@ -1,0 +1,8 @@
+==== EMPRESTIMOS ATIVOS ====
+
+ID Emprestimo: 2 | Leitor: abner | Livro: abner
+Data Emprestimo: 12 | Data Prevista Devolucao: 12
+---------------------------------
+ID Emprestimo: 3 | Leitor: abner | Livro: abner
+Data Emprestimo: '1 | Data Prevista Devolucao: 12
+---------------------------------
