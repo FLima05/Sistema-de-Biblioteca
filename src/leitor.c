@@ -9,7 +9,7 @@ int proximo_leitor_id = 1;
 
 // Função para salvar os leitores em um arquivo de texto
 void salvar_leitores() {
-    FILE *fp = fopen("../data/leitores.txt", "w");
+    FILE *fp = fopen("data/leitores.txt", "w");
     if (!fp) {
         printf("ERRO: Nao foi possivel salvar o arquivo de leitores!\n");
         return;
@@ -72,11 +72,4 @@ void cadastrarleitor() {
     salvar_leitores();
     
     printf("Leitor cadastrado com sucesso. ID: %d\n", novo_leitor.id_leitor);
-}
-
-int main(){
-
-    cadastrarleitor();
-
-    return 0;
 }

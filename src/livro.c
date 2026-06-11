@@ -9,7 +9,7 @@ int proximo_livro_id = 1;
 
 // Função para salvar os livros em um arquivo de texto
 void salvar_livro() {
-    FILE *fp = fopen("../data/livros.txt", "w");
+    FILE *fp = fopen("data/livros.txt", "w");
     if (!fp) {
         printf("ERRO: Nao foi possivel salvar o arquivo de livros!\n");
         return;
